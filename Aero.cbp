@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Aero" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="controle\;" />
+		<Option show_notes="1">
+			<notes>
+				<![CDATA[PROJETO REGISTRO DE VOOS
+
+Fornecido 1 arquivo de 2GB de dados;
+
+-O sistema deve processar o arquivo e ao final informar:
+
+*Quantos voos cada empresa aérea realizou; ok
+*Quantos voos sairam e chegaram de cada cidade; implementando
+*Quantos voos atrasaram;
+*Ranking de empresas por tempo de voo (horas total de voo); 
+*Quantidade de voos por categoria
+
+www2.anac.gov.br/vra/siglasecodigos.asp ---- Olhar
+
+Falta Concertar a função de salvar no arquivo
+Falta concertar a função para carregar os registros
+Falta implementar a função para deletar o registro
+Falta implementar mostrar as cidade e as saidas e chegadas de voos ja comecei 
+Tem que otimizar as funções de listagem com uma função mais abstrata e modularizada 
+
+]]>
+			</notes>
+		</Option>
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/Aero" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/Aero" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="ControleVoo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ControleVoo.h" />
+		<Unit filename="ControleVooArray.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ControleVooCidade.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ControleVooEmpresa.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ControleVooEmpresa.h" />
+		<Unit filename="ControleVooTipo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ControleVooTipo.h" />
+		<Unit filename="Menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Menu.h" />
+		<Unit filename="Voo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Voo.h" />
+		<Unit filename="VooCidade.h" />
+		<Unit filename="VooEmpresa.h" />
+		<Unit filename="VooTipo.h" />
+		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

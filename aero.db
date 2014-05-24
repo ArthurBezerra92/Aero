@@ -1,0 +1,40 @@
+***
+Empresa: TAM	Numero do voo: 3001	DI: 0	Tipo: N	Origem: SBEG	Destino: SBKP
+Saida prevista: 10/02/14 10:10:10
+Saida real: 10/02/14 10:10:10
+Chegada prevista: 10/02/14 13:11:00
+Chegada real: 10/02/14 13:11:00
+Situacao: Realizado	Justificativa: --
+***
+***
+Empresa: GOL	Numero do voo: 3098	DI: 0	Tipo: N	Origem: SBCG	Destino: SBBR
+Saida prevista: 10/02/14 10:15:10
+Saida real: 10/02/14 10:15:10
+Chegada prevista: 10/02/14 13:11:00
+Chegada real: 10/02/14 13:30:00
+Situacao: Realizado	Justificativa: AA
+***
+***
+Empresa: TAM	Numero do voo: 3201	DI: 0	Tipo: R	Origem: SBBR	Destino: SBCG
+Saida prevista: 10/02/14 10:15:10
+Saida real: 10/02/14 10:15:10
+Chegada prevista: 10/02/14 13:11:00
+Chegada real: 10/02/14 13:30:00
+Situacao: Realizado	Justificativa: AA
+***
+***
+Empresa: GOL	Numero do voo: 4291	DI: 0	Tipo: R	Origem: SBEG	Destino: SBBR
+Saida prevista: 11/02/14 19:15:10
+Saida real: 11/02/14 19:15:10
+Chegada prevista: 11/02/14 23:00:00
+Chegada real: 11/02/14 23:00:00
+Situacao: Realizado	Justificativa: --
+***
+***
+Empresa: AZU	Numero do voo: 4292	DI: 0	Tipo: R	Origem: SBEG	Destino: SBCG
+Saida prevista: 11/02/14 19:40:00
+Saida real: 11/02/14 19:40:00
+Chegada prevista: 11/02/14 23:30:00
+Chegada real: 11/02/14 23:51:00
+Situacao: Realizado	Justificativa: AJ
+***
