@@ -3,10 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #define EMPT 4
-#define NUMT 5
-#define DTT 2
+#define NUMT 9
+#define DTT 3
+#define TIT 2
 #define LOCT 5
-#define DATAT 18
+#define DATAT 20
 #define SIT 10
 #define JUST 3
 

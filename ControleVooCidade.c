@@ -41,29 +41,107 @@ void setCidDado(VooCidade *info,char *dado,char *valor){
     else {printf("error\n");return NULL;}
 }
 
-void setCidade(VooCidade *info,char *valor){
-    if(valor=NULL){
-        printf("Error Valor NULL\n");
-    } else if(strlen(valor)>LOCT){
-        printf("tamanho maximo de caracteres %i= \n",LOCT-1);
-    } else {
-        strcpy(info->cidade,valor);
-    }
-}
-
-void setQtdeSair(VooCidade *info,char valor){
-    if(valor=NULL){
-        printf("Error Valor NULL\n");
-    } else {
-        info->qtdeSair = valor;
-    }
-}
-
 char *getCidDado(VooCidade *info,char *dado){
     if(!strcmp(dado,"cidade"))return info->cidade;
     else if(!strcmp(dado,"qtdeSair"))return info->qtdeSair;
     else if(!strcmp(dado,"qtdeChegar"))return info->qtdeChegar;
     else {printf("error\n");return NULL;}
+}
+
+void displayCid(VooCidade *info,char *dado){
+    if(!strcmp(dado,"cidade"))printf("Cidade\t\t%s\n",info->cidade);
+    else if(!strcmp(dado,"qtdeSair"))printf("Decolagens\t%c\n",info->qtdeSair);
+    else if(!strcmp(dado,"qtdeChegar"))printf("Pousos\t\t%c\n",info->qtdeChegar);
+    else if(!strcmp(dado,"all")){
+    printf("Cidade\t\t%s\n",info->cidade);
+    printf("Decolagens\t%i\n",info->qtdeSair);
+    printf("Pousos \t\t%i\n",info->qtdeChegar);
+    printf("\n");
+    }else return;
+}
+
+void listCid(){
+    VooCidade *info;
+    info = startQtdeCid;
+    char *dado="all";
+    printf("\n");
+    if(info==NULL){
+        printf("Lista Vazia\n");
+        return;
+    }    while(info){
+        displayCid(info,dado);
+        info=info->next;
+    }
+}
+
+void clearListVooCid(){
+    VooCidade *info;
+    info=startQtdeCid;
+    qtde=0;
+    while(info!=lastQtdeCid){
+        free(info);
+        info = info->next;
+    }
+    startQtdeCid=lastQtdeCid=NULL;
+    //printf("Lista esvaziada\n");
+}
+
+/** Função que carrega todas as informações de uma lista de Voos para uma lista de cidades
+@return void
+*/
+void loadCidadeList(){
+    Voo *info;
+    VooCidade *QtdeCid;
+    if(start==NULL){
+        printf("Error:lista de voos vazia\n");
+        return;
+    }
+    clearListVooCid();
+    //listCid();
+    QtdeCid = newVooCidade();
+    char *dado="origem";
+    ordenaVoo("empresa");//list();
+    getCids(dado);//listCid();
+    printf("processando dados\n");
+    ordenaVoo(dado);//list();
+    QtdeCid=startQtdeCid;
+    while(QtdeCid){               // enquanto tiver regstros na lista
+        info=start;
+        while(info){
+        if(!strcmp(info->situacao,"REALIZADO")){
+            //printf("situacao do Voo -> Realizado\n");
+                if(strcmp(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado))==0){                                        //se s lista não tiver o nome da cidade adicione copie do item de registros atual
+                    QtdeCid->qtdeSair++;//listCid();
+                    //printf("cidade %s %i\n",QtdeCid->cidade,QtdeCid->qtdeSair);
+                }
+            }
+                //printf("proximo item da lista de voos cidade %s\n",info->origem);
+                info=info->next;
+        }
+                //printf("proximo item da lista de cidades cidade %s %i\n",QtdeCid->cidade,QtdeCid->qtdeSair);
+                QtdeCid=QtdeCid->next;
+    }
+    dado = "destino";
+    getCids(dado);
+    ordenaVoo(dado);//list();
+    QtdeCid=startQtdeCid;
+    while(QtdeCid){               // enquanto tiver regstros na lista
+        info=start;
+        while(info){
+        if(!strcmp(info->situacao,"REALIZADO")){
+            //printf("situacao do Voo -> Realizado\n");
+                if(strcmp(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado))==0){                                        //se s lista não tiver o nome da cidade adicione copie do item de registros atual
+                    QtdeCid->qtdeChegar++;//listCid();
+                    //printf("cidade %s %i\n",QtdeCid->cidade,QtdeCid->qtdeChegar);
+                }
+            }
+                //printf("proximo item da lista de voos cidade %s\n",info->destino);
+                info=info->next;
+        }
+                //printf("proximo item da lista de cidades cidade %s %i\n",QtdeCid->cidade,QtdeCid->qtdeChegar);
+                QtdeCid=QtdeCid->next;
+    }
+    //listCid();
 }
 
 /** Função copia as cidades da lista em uma lista de Voos para uma lista de cidades
@@ -75,16 +153,15 @@ void getCids(char *dado){
     Voo *info;
     VooCidade *QtdeCid;
     QtdeCid = newVooCidade();
-
-    printf("processando dados\n");
+    //printf("processando dados\n");
     ordenaVoo(dado);
     info=start;
     while(info){               // enquanto tiver regstros na lista
-        if(!strcmp(info->situacao,"Realizado")){
+        if(!strcmp(info->situacao,"REALIZADO")){
             printf("situacao do Voo -> Realizado\n");
             if(startQtdeCid==NULL){
                 strcpy(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado));
-                printf("capturou o primeiro  Nome da cidade %s\n",QtdeCid->cidade);
+                //printf("capturou o primeiro  Nome da cidade %s\n",QtdeCid->cidade);
                 dsl_storeCid(QtdeCid,&startQtdeCid,&lastQtdeCid);
                 startQtdeCid=QtdeCid;
             }
@@ -101,64 +178,11 @@ void getCids(char *dado){
                 QtdeCid = newVooCidade();
                 strcpy(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado));
                 dsl_storeCid(QtdeCid,&startQtdeCid,&lastQtdeCid);
-                printf("armazenou cidade na lista \n");
+                //printf("armazenou cidade na lista \n");
             }
         }
         info=info->next;
     }
-}
-
-void getOrigens(){
-    Voo *info;
-    VooCidade *QtdeCid;
-    QtdeCid = newVooCidade();
-    char *dado="origem";
-    getCids(dado);
-    //listCid();
-    printf("processando dados\n");
-    ordenaVoo(dado);
-    //list();
-    QtdeCid=startQtdeCid;
-    while(QtdeCid){               // enquanto tiver regstros na lista
-        info=start;
-        while(info){
-        if(!strcmp(info->situacao,"Realizado")){
-            printf("situacao do Voo -> Realizado\n");
-                if(strcmp(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado))==0){                                        //se s lista não tiver o nome da cidade adicione copie do item de registros atual
-                    QtdeCid->qtdeSair++;
-                    //listCid();
-                    printf("cidade %s %i\n",QtdeCid->cidade,QtdeCid->qtdeSair);
-                }
-            }
-                printf("proximo item da lista de voos cidade %s\n",info->origem);
-                info=info->next;
-        }
-                printf("proximo item da lista de cidades cidade %s %i\n",QtdeCid->cidade,QtdeCid->qtdeSair);
-                QtdeCid=QtdeCid->next;
-    }
-    dado = "destino";
-    getCids(dado);
-    ordenaVoo(dado);
-    //list();
-    QtdeCid=startQtdeCid;
-    while(QtdeCid){               // enquanto tiver regstros na lista
-        info=start;
-        while(info){
-        if(!strcmp(info->situacao,"Realizado")){
-            printf("situacao do Voo -> Realizado\n");
-                if(strcmp(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado))==0){                                        //se s lista não tiver o nome da cidade adicione copie do item de registros atual
-                    QtdeCid->qtdeChegar++;
-                    //listCid();
-                    printf("cidade %s %i\n",QtdeCid->cidade,QtdeCid->qtdeChegar);
-                }
-            }
-                printf("proximo item da lista de voos cidade %s\n",info->destino);
-                info=info->next;
-        }
-                printf("proximo item da lista de cidades cidade %s %i\n",QtdeCid->cidade,QtdeCid->qtdeChegar);
-                QtdeCid=QtdeCid->next;
-    }
-    listCid();
 }
 
 void dsl_storeCid(VooCidade *i,VooCidade **start,VooCidade **last){
@@ -168,7 +192,7 @@ void dsl_storeCid(VooCidade *i,VooCidade **start,VooCidade **last){
         i->prior=NULL;
         *last = i;
         *start = i;
-        printf("setou as sentinelas\n");
+        //printf("setou as sentinelas\n");
         return;
     }
     p = *start; // começa no topo da lista
@@ -197,29 +221,6 @@ void dsl_storeCid(VooCidade *i,VooCidade **start,VooCidade **last){
     i->next = NULL;
     i->prior = old;
     *last = i;
-}
-
-void displayCid(VooCidade *info,char *dado){
-    if(!strcmp(dado,"cidade"))printf("Cidade\t\t%s\n",info->cidade);
-    else if(!strcmp(dado,"qtdeSair"))printf("Decolagens\t%c\n",info->qtdeSair);
-    else if(!strcmp(dado,"qtdeChegar"))printf("Pousos\t\t%c\n",info->qtdeChegar);
-    else if(!strcmp(dado,"all")){
-    printf("Cidade\t\t%s\n",info->cidade);
-    printf("Decolagens\t%i\n",info->qtdeSair);
-    printf("Pousos \t\t%i\n",info->qtdeChegar);
-    printf("\n");
-    }else return;
-}
-
-void listCid(){
-    VooCidade *info;
-    info = startQtdeCid;
-    char *dado="all";
-    printf("\n\n");
-    while(info){
-        displayCid(info,dado);
-        info=info->next;
-    }
 }
 
 void ordenaCid(char *dado){
@@ -287,7 +288,7 @@ void qtdeVooCid(char *cidade){
     int qtdeDest=0;
     int qtdeOri=0;
     while(info){
-        if(!strcmp(info->situacao,"Realizado")){
+        if(!strcmp(info->situacao,"REALIZADO")){
             if(!strcmp(info->origem,cidade))qtdeOri++;
             if(!strcmp(info->destino,cidade))qtdeDest++;
             info=info->next;
@@ -295,265 +296,4 @@ void qtdeVooCid(char *cidade){
     }
     printf("\n%i decolagens e %i pousos na a cidade %s\n\n",qtdeOri,qtdeDest,cidade);
 }
-
-
-/** Função incompleta
-@param  dado    informação para contar origem ou destino
-@return void
-*/
-void qtdeDests(){
-    //countCids("destino");
-    //getCids("destino");
-    //listCid();
-    //countCids("origem");
-    //listCid();
-}
-
-void qtdeOrigs(){
-    Voo *info;
-    VooCidade *QtdeCid;
-    QtdeCid = newVooCidade();
-    printf("processando dados\n");
-    ordenaVoo("origem");
-    info=start;
-    while(info){                                                             // enquanto tiver regstros na lista
-        if(!strcmp(info->situacao,"Realizado")){
-            printf("situacao do Voo -> Realizado\n");
-            if(startQtdeCid==NULL){
-                strcpy(QtdeCid->cidade,info->origem);
-                printf("capturou o primeiro  Nome da cidade %s\n",QtdeCid->cidade);
-                QtdeCid->qtdeChegar=1;
-                startQtdeCid=QtdeCid;
-            }
-            else if(!strcmp(QtdeCid->cidade,info->origem)){
-                QtdeCid->qtdeChegar++;    //se o nome da cidade do item atual da lista for diferente ao nome da cidade da lista dos registros
-                printf("%s realizou %i decolagens\n",QtdeCid->cidade,QtdeCid->qtdeChegar);
-            }
-            else if(strcmp(QtdeCid->cidade,info->origem)){                                        //se s lista não tiver o nome da cidade adicione copie do item de registros atual
-                dsl_storeCid(QtdeCid,&startQtdeCid,&lastQtdeCid);
-                printf("armazenou na lista \n");
-                QtdeCid = (VooCidade*) malloc(sizeof(VooCidade));
-                if(!QtdeCid){
-                    printf("\nsem memória");
-                    return;
-                }
-                strcpy(QtdeCid->cidade,info->origem);
-                printf("capturou o Nome da cidade %s\n",QtdeCid->cidade);
-                QtdeCid->qtdeChegar=1;
-            }
-            if(info==last){
-                dsl_storeCid(QtdeCid,&startQtdeCid,&lastQtdeCid);
-            }
-        }
-        info=info->next;
-    }
-    QtdeCid=startQtdeCid;
-    printf("\n\n");
-    while(QtdeCid){
-        printf("%s realizou %i decolagens\n",QtdeCid->cidade,QtdeCid->qtdeChegar);
-        QtdeCid=QtdeCid->next;
-    }
-}
-
-void qtdeVooCids(){
-    VooCidade *QtdeCid;
-    Voo *info;
-    info=start;
-    QtdeCid = (VooCidade*) malloc(sizeof(VooCidade));
-    if(!QtdeCid){
-        printf("\nsem memória");
-        return;
-    }
-    startQtdeCid=QtdeCid;
-    lastQtdeCid=QtdeCid;
-    printf("processando dados\n");
-    ordenaVoo("destino");
-    while(info){                                                             // enquanto tiver regstros na lista
-        if(!strcmp(info->situacao,"Realizado")){
-            printf("situacao do Voo -> Realizado\n");
-              if(info==start){
-                strcpy(QtdeCid->cidade,info->destino);
-                printf("capturou o primeiro  Nome da cidade %s\n",QtdeCid->cidade);
-                QtdeCid->qtdeChegar=1;
-            }
-            else if(!strcmp(QtdeCid->cidade,info->destino)){
-                QtdeCid->qtdeChegar++;    //se o nome da cidade do item atual da lista for diferente ao nome da cidade da lista dos registros
-                printf("%s realizou %i decolagens\n",QtdeCid->cidade,QtdeCid->qtdeChegar);
-            }
-            else if(strcmp(QtdeCid->cidade,info->destino)){                                        //se s lista não tiver o nome da cidade adicione copie do item de registros atual
-                dsl_storeCid(QtdeCid,&startQtdeCid,&lastQtdeCid);
-                QtdeCid = (VooCidade*) malloc(sizeof(VooCidade));
-                if(!QtdeCid){
-                    printf("\nsem memória");
-                    return;
-                }
-                strcpy(QtdeCid->cidade,info->destino);
-                printf("capturou o Nome da cidade %s\n",QtdeCid->cidade);
-                QtdeCid->qtdeChegar=1;
-            }
-            if(info==last){
-                dsl_storeCid(QtdeCid,&startQtdeCid,&lastQtdeCid);
-            }
-        }
-        info=info->next;
-    }
-    info=start;
-    QtdeCid=startQtdeCid;
-    ordenaVoo("origem");
-    while(info){                                                             // enquanto tiver regstros na lista
-        if(!strcmp(info->situacao,"Realizado")){
-            printf("situacao do Voo -> Realizado\n");
-            if(info==start){
-                strcpy(QtdeCid->cidade,info->destino);
-                printf("capturou o primeiro  Nome da cidade %s\n",QtdeCid->cidade);
-                //QtdeCid->qtdeSair=1;
-            }
-            else if(!strcmp(QtdeCid->cidade,info->origem)){
-                QtdeCid->qtdeSair++;    //se o nome da cidade do item atual da lista for diferente ao nome da cidade da lista dos registros
-                printf("%s realizou %i decolagens\n",QtdeCid->cidade,QtdeCid->qtdeSair);
-            }
-            else if(strcmp(QtdeCid->cidade,info->origem)){                                        //se s lista não tiver o nome da cidade adicione copie do item de registros atual
-                dsl_storeCid(QtdeCid,&startQtdeCid,&lastQtdeCid);
-                QtdeCid = (VooCidade*) malloc(sizeof(VooCidade));
-                if(!QtdeCid){
-                    printf("\nsem memória");
-                    return;
-                }
-                strcpy(QtdeCid->cidade,info->origem);
-                printf("capturou o Nome da cidade %s\n",QtdeCid->cidade);
-                QtdeCid->qtdeSair=1;
-            }
-            if(info==last){
-                dsl_storeCid(QtdeCid,&startQtdeCid,&lastQtdeCid);
-            }
-        }
-        info=info->next;
-    }
-    info=start;
-    QtdeCid=startQtdeCid;
-    printf("\n\n");
-    while(QtdeCid){
-        printf("%s realizou %i decolagens\n",QtdeCid->cidade,QtdeCid->qtdeChegar);
-        QtdeCid=QtdeCid->next;
-        system("pause");
-    }
-}
-
-/** Função que conta a quantidade de decolagens ou de pousos de uma lista de Voos
-    Ela guarda as informações em outra lista com as cidades contadas
-@param  dado    informação para contar origem ou destino
-@return void
-*/
-void countCids(char *dado){
-    Voo *info;
-
-    /*char *dado;
-    dado = "origem";
-    qtdec = "qtdeSair";*/
-    char *qtdec;
-    qtdec = malloc(11*sizeof(char));
-    //Condicoes para definir com que tipo de dado vamos trabalhar
-    if(!strcmp(dado,"origem"))strcpy(qtdec,"qtdeSair");
-    else if(!strcmp(dado,"destino"))strcpy(qtdec,"qtdeChegar");
-    else {printf("Dado invalido. insira (origem) ou (destino)");return;}
-
-    VooCidade *QtdeCid,*p,*old;
-    QtdeCid = newVooCidade();
-    printf("processando dados\n");
-    ordenaVoo(dado);
-    info=start;
-    while(info){               // enquanto tiver regstros na lista
-        if(!strcmp(info->situacao,"Realizado")){
-            printf("situacao do Voo -> Realizado\n");
-            if(startQtdeCid==NULL){
-                strcpy(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado));
-                printf("capturou o primeiro  Nome da cidade %s\n",QtdeCid->cidade);
-                setCidDado(QtdeCid,qtdec,1);
-                startQtdeCid=QtdeCid;
-            }
-
-            else if(!strcmp(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado))){
-                setCidDado(QtdeCid,qtdec,(getCidDado(QtdeCid,qtdec)+1));
-                printf("%s %s: %i \n",QtdeCid->cidade,qtdec,getCidDado(QtdeCid,qtdec));
-            }
-            else if(strcmp(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado))){                                        //se s lista não tiver o nome da cidade adicione copie do item de registros atual
-                dsl_storeCid(QtdeCid,&startQtdeCid,&lastQtdeCid);
-                printf("armazenou na lista \n");
-                QtdeCid = newVooCidade();
-                strcpy(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado));
-                printf("capturou o Nome da cidade %s\n",QtdeCid->cidade);
-                setCidDado(QtdeCid,qtdec,1);
-            }
-            if(info==last)dsl_storeCid(QtdeCid,&startQtdeCid,&lastQtdeCid);
-        }
-        info=info->next;
-    }
-
-/*    dado = "destino";
-    ordenaVoo(dado);
-    info=start;
-    while(info){               // enquanto tiver regstros na lista
-        if(!strcmp(info->situacao,"Realizado")){
-            printf("situacao do Voo -> Realizado\n");
-            if(startQtdeCid==NULL){
-                strcpy(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado));
-                printf("capturou o primeiro  Nome da cidade %s\n",QtdeCid->cidade);
-                setCidDado(QtdeCid,qtdec,1);
-                startQtdeCid=QtdeCid;
-            }
-            p = startQtdeCid;
-            old =NULL;
-            while(p){
-                if(strcmp(getCidDado(p,"cidade"),getCidDado(QtdeCid,"cidade"))<0){
-                    old = p;
-                    p = p->next;
-                }
-                else {
-                    if(p->prior){
-                        compareCid(QtdeCid,info,dado,qtdec);
-                        p->prior->next = i;
-                        i->next = p;
-                        i->prior = p->prior;
-                        p->prior = i;
-                        return;
-                    }
-
-                    setCidDado(QtdeCid,qtdec,(getCidDado(QtdeCid,qtdec)+1));
-                    printf("%s %s: %i \n",QtdeCid->cidade,qtdec,getCidDado(QtdeCid,qtdec));
-
-                }
-            }
-            else if(strcmp(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado))<0){                                        //se s lista não tiver o nome da cidade adicione copie do item de registros atual
-                dsl_storeCid(QtdeCid,&startQtdeCid,&lastQtdeCid);
-                printf("armazenou na lista \n");
-                QtdeCid = newVooCidade();
-                strcpy(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado));
-                printf("capturou o Nome da cidade %s\n",QtdeCid->cidade);
-                setCidDado(QtdeCid,qtdec,1);
-            }
-            if(info==last)dsl_storeCid(QtdeCid,&startQtdeCid,&lastQtdeCid);
-        }
-        info=info->next;
-    }
-
-*/
-}
-
-void compareCid(VooCidade *QtdeCid,Voo *info, char *dado, char *qtdec){
-            if(!strcmp(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado))){
-                setCidDado(QtdeCid,qtdec,(getCidDado(QtdeCid,qtdec)+1));
-                printf("%s %s: %i \n",QtdeCid->cidade,qtdec,getCidDado(QtdeCid,qtdec));
-            }
-            else if(strcmp(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado))){                                        //se s lista não tiver o nome da cidade adicione copie do item de registros atual
-                dsl_storeCid(QtdeCid,&startQtdeCid,&lastQtdeCid);
-                printf("armazenou na lista \n");
-                QtdeCid = newVooCidade();
-                strcpy(getCidDado(QtdeCid,"cidade"),getVooDado(info,dado));
-                printf("capturou o Nome da cidade %s\n",QtdeCid->cidade);
-                setCidDado(QtdeCid,qtdec,1);
-            }
-}
-
-
-
 

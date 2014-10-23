@@ -21,7 +21,7 @@ int menu_select(){
         printf("Digite sua escolha\n");
         gets(s);
         c = atoi(s);
-    }while(c<0||c>9);
+    }while(c<0||c>10);
     fflush(stdin);
     return c;
 }
